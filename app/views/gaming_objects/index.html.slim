@@ -1,0 +1,3 @@
+h1.page-title.text-center = @type == 'Character' ? 'Heroes' : @type.pluralize
+.row
+  = render partial: 'gaming_objects/hexagonal', locals: { gaming_objects: @gaming_objects}
