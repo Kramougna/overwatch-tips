@@ -1,0 +1,10 @@
+.gaming_object_cel.col-xs-12
+    .hexagon
+        .contents
+            ul#hexGrid
+                - @gaming_objects.each do |gaming_object|
+                    li.hex
+                        = link_to gaming_object, class: 'hexIn' do
+                            = image_tag gaming_object.image_path
+                            .h3 style="font-size: 2.5rem;" = gaming_object.name
+                            p = gaming_object.description

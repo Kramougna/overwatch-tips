@@ -1,0 +1,65 @@
+.header_gaming_object
+  .header_gaming_objects_link
+    - @gaming_objects.each do |gaming_object|
+      = render partial: "gaming_objects/icon", locals: { gaming_object: gaming_object , active: (gaming_object.id == @gaming_object.id)}
+
+.container-fluid.gaming_object_background
+  .row
+    .container.gaming_object_container
+      .row
+        .col-md-6
+          .row
+            .col-md-4
+              = image_tag @gaming_object.image_path
+            .col-md-8 style="padding-top: 5rem;"
+              h1.page-title = @gaming_object.name
+              p =@gaming_object.description
+        .col-md-6
+          - if @gaming_object.type == "Character"
+            .row.meta_container
+              .col-md-6
+                .meta_title
+                  h2 Strong Against
+                .meta_content
+                  .weaker_characters
+                    - @weaker_characters.each do |weaker_character|
+                      = render partial: "gaming_objects/icon", locals: { gaming_object: weaker_character , active: false}
+              .col-md-6
+                .meta_title
+                  h2 Weak Against
+                .meta_content
+                  .stronger_characters
+                    - @stronger_characters.each do |stronger_character|
+                      = render partial: "gaming_objects/icon", locals: { gaming_object: stronger_character , active: false}
+
+.container
+  .row
+    .col-md-12 style="margin-top: 1rem;"
+      span.best-tip-sentence Best tips of the
+      .btn-group
+        - ["life", "year", "month", "week"].each do |duration_string|
+          - active_class = @duration_string == duration_string ? "active" : ""
+          = link_to duration_string, url_for([@gaming_object, duration: duration_string]), class: "btn btn-default #{active_class}"
+  .row
+    - @tips_hash.each do |category, category_tips|
+      .col-md-4
+        h2.tips_category = playing_sentence(category, @gaming_object)
+        = render partial: 'tips/form', locals: {category: category, gaming_object: @gaming_object, klass: "top-tip-form"}
+        .row class="#{category}"
+          - category_tips[:good_tips].each do |tip|
+            = render partial: "tips/show", locals: { tip: tip }
+
+        = render partial: 'tips/form', locals: {category: category, gaming_object: @gaming_object, klass: "bottom-tip-form"} if category_tips[:good_tips].count > 5
+
+        - if category_tips[:bad_tips].present?
+          .row
+            .bad-tips-heading.dropdown-link.col-md-12
+              .btn.btn-warning.hall-of-shame-button
+                h3.hall-of-shame
+                  i.fa.fa-caret-right aria-hidden="true"
+                    Hall of shame
+            .bad-tips-body.dropdown-content.col-md-12
+              .row
+                - category_tips[:bad_tips].each do |tip|
+                  = render partial: "tips/show", locals: { tip: tip }
+              = render partial: 'tips/form', locals: {category: category, gaming_object: @gaming_object, klass: "bottom-tip-form"} if category_tips[:bad_tips].count > 5
